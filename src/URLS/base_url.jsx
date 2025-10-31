@@ -1,2 +1,2 @@
-const base_url = "http://localhost:4000";
+const base_url = "https://expense-tracker-back-end-six.vercel.app";
 export default base_url;

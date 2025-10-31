@@ -12,7 +12,6 @@ const LoginForm = ({ onChange }) => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  // ✅ Login Submit Function
   const onSubmit = async (data) => {
     try {
       setLoading(true);
@@ -45,7 +44,6 @@ const LoginForm = ({ onChange }) => {
 
   return (
     <section className="flex justify-center items-center max-lg:mx-auto min-h-screen w-[70%] max-sm:w-[85%] font-sans">
-      {/* ✅ Toast Container */}
       <Toaster position="top-center" reverseOrder={false} />
 
       <div className="w-full">
@@ -58,9 +56,7 @@ const LoginForm = ({ onChange }) => {
           </p>
         </div>
 
-        {/* ✅ Login Form */}
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-          {/* Email Field */}
           <div>
             <label className="block text-sm font-medium text-gray-800 mb-2">
               Email Address
@@ -74,7 +70,6 @@ const LoginForm = ({ onChange }) => {
             />
           </div>
 
-          {/* Password Field */}
           <div>
             <label className="block text-sm font-medium text-gray-800 mb-2">
               Password
@@ -97,7 +92,6 @@ const LoginForm = ({ onChange }) => {
             </div>
           </div>
 
-          {/* Submit Button */}
           <button
             type="submit"
             disabled={loading}
@@ -107,7 +101,6 @@ const LoginForm = ({ onChange }) => {
           </button>
         </form>
 
-        {/* Signup Redirect */}
         <p className="text-sm text-center mt-3 text-gray-700">
           Don’t have an account?{" "}
           <button

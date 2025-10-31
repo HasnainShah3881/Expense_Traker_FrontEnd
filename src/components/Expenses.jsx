@@ -57,7 +57,6 @@ const Expenses = () => {
     );
   };
 
-  // Add Expense Function with Validation
   const handleAddExpense = async () => {
     const { source, amount, date } = newExpense;
     const newErrors = {
@@ -113,7 +112,6 @@ const Expenses = () => {
     }
   };
 
-  // Download Excel Function
   const handleDownloadExcel = () => {
     const expenseList = transactions
       .filter((t) => t.amount < 0)
@@ -143,7 +141,6 @@ const Expenses = () => {
         internalActiveSection === "Expenses" ? "flex" : "hidden"
       }`}
     >
-      {/* Chart Section */}
       <div className="w-full bg-gray-50 p-8">
         <div className="bg-white rounded-lg shadow-sm p-8">
           <div className="flex items-start justify-between mb-8">
@@ -165,7 +162,6 @@ const Expenses = () => {
             </button>
           </div>
 
-          {/* Chart */}
           <div className="w-full min-h-[300px]">
             <ResponsiveContainer width="100%" aspect={2}>
               <AreaChart
@@ -223,7 +219,6 @@ const Expenses = () => {
         </div>
       </div>
 
-      {/* Expense List */}
       <div className="flex-1 bg-white rounded-2xl m-8 p-5 shadow hover:shadow-md transition">
         <div className="flex items-center justify-between mb-4">
           <h3 className="font-semibold text-lg">All Expenses</h3>
@@ -261,7 +256,6 @@ const Expenses = () => {
         </ul>
       </div>
 
-      {/* Modal for Adding Expense */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-[#00000029] bg-opacity-40 flex justify-center items-center z-50">
           <div className="bg-white rounded-xl shadow-lg p-6 w-96 relative">
@@ -274,7 +268,6 @@ const Expenses = () => {
             <h2 className="text-lg font-semibold mb-4">Add New Expense</h2>
 
             <div className="space-y-3">
-              {/* Source */}
               <div>
                 <label className="text-sm text-gray-700">Source</label>
                 <input
@@ -296,7 +289,6 @@ const Expenses = () => {
                 )}
               </div>
 
-              {/* Amount */}
               <div>
                 <label className="text-sm text-gray-700">Amount</label>
                 <input
@@ -318,7 +310,6 @@ const Expenses = () => {
                 )}
               </div>
 
-              {/* Date */}
               <div>
                 <label className="text-sm text-gray-700">Date</label>
                 <input
@@ -339,7 +330,6 @@ const Expenses = () => {
                 )}
               </div>
 
-              {/* Emoji Picker */}
               <div className="relative">
                 <label className="text-sm text-gray-700">Icon</label>
                 <div className="flex items-center gap-2 mt-1">
@@ -363,7 +353,6 @@ const Expenses = () => {
                 )}
               </div>
 
-              {/* Submit */}
               <button
                 onClick={handleAddExpense}
                 disabled={loading}

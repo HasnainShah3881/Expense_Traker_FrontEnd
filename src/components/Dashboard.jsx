@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useMemo } from "react";
+import React, { useEffect, useCallback, useMemo, useState } from "react";
 import {
   PieChart,
   Pie,
@@ -32,7 +32,8 @@ const Dashboard = ({ showPage }) => {
     settransactions,
   } = useAppContext();
 
-  // ✅ Fetch Transactions
+  const [showAllTransactions, setShowAllTransactions] = useState(false);
+
   const getData = useCallback(async () => {
     try {
       const res = await axios.get(`${base_url}/Data/getAlldata`, {
@@ -40,7 +41,6 @@ const Dashboard = ({ showPage }) => {
       });
       if (res.data.success === true) {
         toast.success(res.data.message);
-        console.log("Fetched transactions:", res.data);
         settransactions(res.data);
       }
     } catch (error) {
@@ -52,20 +52,16 @@ const Dashboard = ({ showPage }) => {
     getData();
   }, [getData]);
 
-  // ✅ Dynamic Totals (Auto-calculated from transactions)
   const { totalIncome, totalExpenses, totalBalance } = useMemo(() => {
     const income =
       transactions
         ?.filter((t) => t.amount > 0)
         .reduce((acc, t) => acc + t.amount, 0) || 0;
-
     const expenses =
       transactions
         ?.filter((t) => t.amount < 0)
         .reduce((acc, t) => acc + Math.abs(t.amount), 0) || 0;
-
     const balance = income - expenses;
-
     return {
       totalIncome: income,
       totalExpenses: expenses,
@@ -73,7 +69,6 @@ const Dashboard = ({ showPage }) => {
     };
   }, [transactions]);
 
-  // ✅ Dynamic Financial Overview Chart
   const data = useMemo(
     () => [
       { name: "Total Balance", value: totalBalance, color: "#6B46C1" },
@@ -83,7 +78,6 @@ const Dashboard = ({ showPage }) => {
     [totalBalance, totalExpenses, totalIncome]
   );
 
-  // Dummy static data (you can also make these dynamic later)
   const data2 = useMemo(
     () => [
       { name: "Shopping", Amount: 430 },
@@ -113,9 +107,7 @@ const Dashboard = ({ showPage }) => {
     >
       <div className="flex-1 flex flex-col">
         <main className="p-6 max-sm:px-2 flex flex-col gap-6">
-          {/* Top Cards */}
           <div className="flex flex-wrap gap-4">
-            {/* ✅ Total Balance */}
             <div className="flex-1 min-w-[250px] bg-white rounded-2xl p-5 shadow hover:shadow-md transition">
               <div className="flex items-center gap-3">
                 <div className="p-3 bg-purple-600 text-white rounded-xl">
@@ -129,8 +121,6 @@ const Dashboard = ({ showPage }) => {
                 </div>
               </div>
             </div>
-
-            {/* ✅ Total Income */}
             <div className="flex-1 min-w-[250px] bg-white rounded-2xl p-5 shadow hover:shadow-md transition">
               <div className="flex items-center gap-3">
                 <div className="p-3 bg-orange-500 text-white rounded-xl">
@@ -144,8 +134,6 @@ const Dashboard = ({ showPage }) => {
                 </div>
               </div>
             </div>
-
-            {/* ✅ Total Expenses */}
             <div className="flex-1 min-w-[250px] bg-white rounded-2xl p-5 shadow hover:shadow-md transition">
               <div className="flex items-center gap-3">
                 <div className="p-3 bg-red-500 text-white rounded-xl">
@@ -161,17 +149,30 @@ const Dashboard = ({ showPage }) => {
             </div>
           </div>
 
-          {/* Recent Transactions */}
           <div className="flex flex-col lg:flex-row gap-6">
             <div className="flex-1 bg-white rounded-2xl p-5 shadow hover:shadow-md transition">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="font-semibold text-lg">Recent Transactions</h3>
-                <button className="text-sm text-gray-600 hover:text-purple-600 flex items-center gap-1">
-                  See All <ArrowUpRight size={16} />
+                <button
+                  onClick={() => setShowAllTransactions((prev) => !prev)}
+                  className="text-sm text-gray-600 hover:text-purple-600 flex items-center gap-1"
+                >
+                  {showAllTransactions ? (
+                    <>
+                      See Less <ArrowDownRight size={16} />
+                    </>
+                  ) : (
+                    <>
+                      See All <ArrowUpRight size={16} />
+                    </>
+                  )}
                 </button>
               </div>
               <ul className="space-y-4">
-                {transactions?.slice(0, 10).map((t, index) => (
+                {(showAllTransactions
+                  ? transactions
+                  : transactions?.slice(0, 5)
+                ).map((t, index) => (
                   <li
                     key={t._id || index}
                     className="flex justify-between items-center hover:bg-gray-50 rounded-lg p-2 transition"
@@ -201,7 +202,6 @@ const Dashboard = ({ showPage }) => {
               </ul>
             </div>
 
-            {/* ✅ Dynamic Financial Overview Chart */}
             <div className="flex-1 bg-white rounded-2xl p-5 shadow hover:shadow-md transition flex flex-col items-center justify-center">
               <h1 className="font-semibold text-lg mb-4">Financial Overview</h1>
               <ResponsiveContainer width="100%" height={250}>
@@ -232,13 +232,12 @@ const Dashboard = ({ showPage }) => {
             </div>
           </div>
 
-          {/* Expenses Section */}
           <div className="flex flex-col lg:flex-row gap-6">
             <div className="flex-1 bg-white rounded-2xl p-5 shadow hover:shadow-md transition">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="font-semibold text-lg">Expenses</h3>
                 <button
-                  onClick={() => setInternalActiveSection("Expense")}
+                  onClick={() => setInternalActiveSection("Expenses")}
                   className="text-sm text-gray-600 hover:text-purple-600 flex items-center gap-1"
                 >
                   See All <ArrowUpRight size={16} />
@@ -280,7 +279,6 @@ const Dashboard = ({ showPage }) => {
               </ul>
             </div>
 
-            {/* Bar Chart */}
             <div className="flex-1 bg-white rounded-2xl p-5 shadow hover:shadow-md transition flex flex-col items-center justify-center">
               <h1 className="text-start font-semibold text-lg mb-4">
                 Last 30 Days Expenses
@@ -300,7 +298,6 @@ const Dashboard = ({ showPage }) => {
             </div>
           </div>
 
-          {/* Income Section */}
           <div className="flex flex-col lg:flex-row gap-6">
             <div className="flex-1 bg-white rounded-2xl p-5 shadow hover:shadow-md transition flex flex-col items-center justify-center">
               <h1 className="font-semibold text-lg mb-4">
@@ -326,8 +323,6 @@ const Dashboard = ({ showPage }) => {
                 </PieChart>
               </ResponsiveContainer>
             </div>
-
-            {/* Income List */}
             <div className="flex-1 bg-white rounded-2xl p-5 shadow hover:shadow-md transition">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="font-semibold text-lg">Income</h3>
@@ -380,5 +375,4 @@ const Dashboard = ({ showPage }) => {
   );
 };
 
-// ✅ Prevents unnecessary re-renders
 export default React.memo(Dashboard);

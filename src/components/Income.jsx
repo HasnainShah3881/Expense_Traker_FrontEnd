@@ -32,7 +32,6 @@ const Income = ({ showPage }) => {
 
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
-  // Update chart whenever transactions change
   useEffect(() => {
     if (transactions && transactions.length > 0) {
       const incomeTransactions = transactions.filter((t) => t.amount > 0);
@@ -52,7 +51,6 @@ const Income = ({ showPage }) => {
     }
   }, [transactions]);
 
-  // Handle Add Income
   const handleAddIncome = async () => {
     const { source, amount, date } = newIncome;
     const newErrors = {
@@ -115,7 +113,6 @@ const Income = ({ showPage }) => {
     if (e.target.id === "modalBackdrop") setIsModalOpen(false);
   };
 
-  // ---------------- Excel Download ----------------
   const handleDownload = () => {
     const incomeData = transactions
       .filter((t) => t.amount > 0)
@@ -139,7 +136,6 @@ const Income = ({ showPage }) => {
     <section
       className={`mb-20 flex-col ${internalActiveSection === "Income" ? "flex" : "hidden"}`}
     >
-      {/* ---------------- INCOME CHART ---------------- */}
       <div className="bg-white shadow-md overflow-hidden rounded-2xl m-8 p-8 transition flex-col justify-center">
         <div className="flex justify-between">
           <div>
@@ -183,7 +179,6 @@ const Income = ({ showPage }) => {
         </BarChart>
       </div>
 
-      {/* ---------------- INCOME LIST ---------------- */}
       <div className="flex-1 bg-white rounded-2xl m-8 p-5 shadow hover:shadow-md transition">
         <div className="flex items-center justify-between mb-4">
           <h3 className="font-semibold text-lg">Income Sources</h3>
@@ -218,7 +213,6 @@ const Income = ({ showPage }) => {
         </ul>
       </div>
 
-      {/* ---------------- ADD INCOME MODAL ---------------- */}
       {isModalOpen && (
         <div
           id="modalBackdrop"

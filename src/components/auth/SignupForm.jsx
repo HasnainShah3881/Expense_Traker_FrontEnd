@@ -20,7 +20,7 @@ const SignupForm = ({ onChange }) => {
     );
   };
 
-  // 🧹 Cleanup URL on unmount
+
   useEffect(() => {
     return () => {
       if (profileImage?.preview) {
@@ -35,7 +35,6 @@ const SignupForm = ({ onChange }) => {
     multiple: false,
   });
 
-  // 🧾 Handle form submit
   const onSubmit = async (data) => {
     try {
       let uploadedImageUrl = null;
@@ -52,7 +51,6 @@ const SignupForm = ({ onChange }) => {
         setIsUploading(false);
       }
 
-      // Signup API call
       const res = await axios.post(
         `${base_url}/Auth/signup`,
         {
@@ -94,7 +92,6 @@ const SignupForm = ({ onChange }) => {
           </p>
         </div>
 
-        {/* 📸 Profile Upload */}
         <div
           {...getRootProps()}
           className="flex flex-col items-center w-max mx-auto mb-8 cursor-pointer"

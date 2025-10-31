@@ -12,7 +12,6 @@ const Sidebar = React.memo(() => {
     useAppContext();
   const navigate = useNavigate();
 
-  // ✅ useCallback prevents new function creation on every render
   const getUser =async () => {
     try {
       if (Profile) return;
@@ -29,7 +28,6 @@ const Sidebar = React.memo(() => {
       const res = await axios.get(`${base_url}/Data/getAlldata`, {
         withCredentials: true,
       });
-      // toast.success(res.data.message);
       console.log("data in home page", res.data);
       settransactions(res.data);
     } catch (error) {

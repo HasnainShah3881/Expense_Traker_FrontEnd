@@ -25,13 +25,10 @@ const Auth = () => {
       console.error("Failed to fetch user:", err);
     }
   };
-  // ✅ Handle navigation based on Profile state
   useEffect(() => {
-    // If user is logged in (Profile is non-empty)
     if (Profile && Object.keys(Profile).length > 0) {
       navigate("/home");
     }
-    // If user is not logged in
     else {
       navigate("/Auth");
     }
@@ -47,7 +44,6 @@ const Auth = () => {
       </h1>
 
       <div className="flex justify-between max-lg:flex-col w-full">
-        {/* Left Section */}
         <section className="flex px-5 items-center h-screen w-full">
           {showSignup ? (
             <SignupForm onChange={() => setShowSignup(false)} />
@@ -56,7 +52,6 @@ const Auth = () => {
           )}
         </section>
 
-        {/* Right Section */}
         <section className="w-full h-screen relative overflow-hidden bg-[#ccc9db67]">
           <div className="size-40 absolute rounded-br-4xl bg-[#6757ac]"></div>
 

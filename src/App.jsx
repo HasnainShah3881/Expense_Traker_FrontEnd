@@ -26,11 +26,7 @@ const App = () => {
 export default App
 
 const Root = () => {
-  // const isAuthenticated = !!localStorage.getItem('token');
 
-  // return isAuthenticated ? (
-  //   <Navigate to='/home' />
-  // ) : <Navigate to='/login' />
   return <Navigate to='/auth' />
 
 }

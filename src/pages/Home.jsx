@@ -10,9 +10,8 @@ import { useAppContext } from "../context/context";
 const Home = () => {
   const { Profile } = useAppContext();
   const navigate = useNavigate();
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true); // 👈 sidebar visibility
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true); 
 
-  // ✅ Redirect to Auth if user not logged in
   useEffect(() => {
     if (!Profile?._id) {
       navigate("/Auth");
@@ -21,13 +20,10 @@ const Home = () => {
 
   return (
     <div className="h-screen flex flex-col">
-      {/* Header */}
       <Header onMenuClick={() => setIsSidebarOpen(!isSidebarOpen)} />
 
-      {/* Main Layout */}
       <div className="flex flex-1 overflow-hidden relative">
 
-        {/* Sidebar */}
         <aside
           className={`bg-white border-r border-gray-200 fixed lg:static z-40 h-full transition-all duration-300 
           ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"} 
@@ -36,7 +32,6 @@ const Home = () => {
           <Sidebar />
         </aside>
 
-        {/* Overlay for mobile */}
         {isSidebarOpen && (
           <div
             className="fixed inset-0 bg-opacity-30 z-30 lg:hidden"
@@ -44,7 +39,6 @@ const Home = () => {
           ></div>
         )}
 
-        {/* Main Content */}
         <main className="grow overflow-y-auto bg-gray-50 lg:ml-0">
           <Dashboard />
           <Income />

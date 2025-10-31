@@ -53,9 +53,9 @@ const Income = ({ showPage }) => {
 
   const handleAddIncome = async () => {
     const { source, amount, date } = newIncome;
-    if(amount <= 0){
-      return toast.error("please only add income")
-    }
+    // if(amount <= 0){
+    //   return toast.error("please only add income")
+    // }
     const newErrors = {
       source: !source.trim(),
       amount: !amount,

@@ -29,7 +29,7 @@ const Home = () => {
           ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"} 
           lg:translate-x-0 lg:w-1/4 xl:w-1/6 w-64`}
         >
-          <Sidebar closesidebar={setIsSidebarOpen()} />
+          <Sidebar  />
         </aside>
 
         {isSidebarOpen && (

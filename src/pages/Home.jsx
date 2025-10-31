@@ -10,7 +10,7 @@ import { useAppContext } from "../context/context";
 const Home = () => {
   const { Profile } = useAppContext();
   const navigate = useNavigate();
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true); 
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false); 
 
   useEffect(() => {
     if (!Profile?._id) {
@@ -29,7 +29,7 @@ const Home = () => {
           ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"} 
           lg:translate-x-0 lg:w-1/4 xl:w-1/6 w-64`}
         >
-          <Sidebar />
+          <Sidebar closesidebar={setIsSidebarOpen()} />
         </aside>
 
         {isSidebarOpen && (

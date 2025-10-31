@@ -24,7 +24,7 @@ import axios from "axios";
 import base_url from "../URLS/base_url";
 import toast from "react-hot-toast";
 
-const Dashboard = ({ showPage }) => {
+const Dashboard = ({ showPage , }) => {
   const {
     internalActiveSection,
     setInternalActiveSection,

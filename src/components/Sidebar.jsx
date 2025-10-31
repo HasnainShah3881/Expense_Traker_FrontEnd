@@ -6,7 +6,7 @@ import base_url from "../URLS/base_url";
 import axios from "axios";
 import toast from "react-hot-toast";
 
-const Sidebar = React.memo(() => {
+const Sidebar = React.memo((closesidebar) => {
   const [logoutLoading, setLogoutLoading] = useState(false);
   const { internalActiveSection, setInternalActiveSection, Profile, setProfile,transactions, settransactions } =
     useAppContext();
@@ -92,7 +92,9 @@ const Sidebar = React.memo(() => {
           ].map((item) => (
             <li key={item.id}>
               <a
-                onClick={() => setInternalActiveSection(item.id)}
+                onClick={() => {setInternalActiveSection(item.id)
+                        closesidebar(false)
+                }}
                 className={`flex items-center gap-3 p-3 rounded-xl ${
                   internalActiveSection === item.id
                     ? "bg-purple-600 text-white"

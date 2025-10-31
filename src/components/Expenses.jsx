@@ -16,7 +16,7 @@ import toast from "react-hot-toast";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 
-const Expenses = () => {
+const Expenses = ( ) => {
   const { internalActiveSection, transactions, settransactions, Profile } =
     useAppContext();
 

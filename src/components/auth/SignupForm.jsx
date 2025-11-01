@@ -87,10 +87,10 @@ const SignupForm = ({ onChange }) => {
   };
 
   return (
-    <section className="flex justify-center items-center min-h-screen w-[90%] font-sans">
+    <section className="flex justify-center items-center min-h-screen w-full font-sans">
       <Toaster position="top-center" reverseOrder={false} />
 
-      <div className="w-full max-w-xl">
+      <div className="w-full max-w-2xl">
         <div className="text-center mb-6">
           <h1 className="text-2xl font-semibold text-gray-900">
             Create an Account

@@ -43,8 +43,8 @@ const Auth = () => {
         Expense Tracker
       </h1>
 
-      <div className="flex justify-between max-lg:flex-col w-full">
-        <section className="flex px-5 items-center h-screen w-full">
+      <div className="flex  justify-between   max-lg:flex-col w-full">
+        <section className="flex px-5  items-center h-screen w-full">
           {showSignup ? (
             <SignupForm onChange={() => setShowSignup(false)} />
           ) : (
@@ -52,7 +52,7 @@ const Auth = () => {
           )}
         </section>
 
-        <section className="w-full h-screen relative overflow-hidden bg-[#ccc9db67]">
+        <section className="w-full h-screen relative max-lg:hidden overflow-hidden bg-[#ccc9db67]">
           <div className="size-40 absolute rounded-br-4xl bg-[#6757ac]"></div>
 
           <div className="relative rounded-lg z-100 flex gap-3 px-3 items-center h-15 mx-20 max-lg:mx-10 top-10 bg-white">
@@ -69,7 +69,7 @@ const Auth = () => {
 
           <div className="size-70 border-20 border-[#b73ecf] rounded-4xl absolute translate-y-[50%] -right-30"></div>
 
-          <div className="rounded-2xl absolute bottom-10 z-100 px-5 w-full overflow-hidden">
+          <div className="rounded-2xl absolute bottom-10 z-10  w-full overflow-hidden">
             <img className="mx-auto" src={loginchart} alt="chart" />
           </div>
 

@@ -13,7 +13,7 @@ const Auth = () => {
   const { Profile, setProfile } = useAppContext();
   const navigate = useNavigate();
 
-  console.log(Profile);
+  // console.log(Profile);
   const getUser = async () => {
     try {
       if (Profile) return;

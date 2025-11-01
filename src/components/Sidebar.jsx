@@ -8,7 +8,7 @@ import toast from "react-hot-toast";
 
 const Sidebar = React.memo(() => {
   const [logoutLoading, setLogoutLoading] = useState(false);
-  const { internalActiveSection, setInternalActiveSection, Profile, setProfile,transactions, settransactions } =
+  const { internalActiveSection, setInternalActiveSection, Profile, setProfile,transactions, settransactions , isSidebarOpen, setIsSidebarOpen} =
     useAppContext();
   const navigate = useNavigate();
 
@@ -20,7 +20,7 @@ const Sidebar = React.memo(() => {
       });
       setProfile(res.data);
     } catch (err) {
-      console.error("Failed to fetch user:", err);
+      // console.error("Failed to fetch user:", err);
     }
   }
    const getData = useCallback(async () => {
@@ -28,10 +28,10 @@ const Sidebar = React.memo(() => {
       const res = await axios.get(`${base_url}/Data/getAlldata`, {
         withCredentials: true,
       });
-      console.log("data in home page", res.data);
+      // console.log("data in home page", res.data);
       settransactions(res.data);
     } catch (error) {
-      console.error("Error fetching data:", error);
+      // console.error("Error fetching data:", error);
     }
   }, [settransactions]);
 
@@ -93,7 +93,7 @@ const Sidebar = React.memo(() => {
             <li key={item.id}>
               <a
                 onClick={() => {setInternalActiveSection(item.id)
-                   
+                   setIsSidebarOpen(false)
                 }}
                 className={`flex items-center gap-3 p-3 rounded-xl ${
                   internalActiveSection === item.id

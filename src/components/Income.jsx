@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Bar, BarChart, Tooltip, XAxis, YAxis, Bar as BarComponent } from "recharts";
+import {
+  Bar,
+  BarChart,
+  Tooltip,
+  XAxis,
+  YAxis,
+  Bar as BarComponent,
+} from "recharts";
 import { useAppContext } from "../context/context";
 import { ArrowUpRight, Download, Plus, X } from "lucide-react";
 import EmojiPicker from "emoji-picker-react";
@@ -52,61 +59,59 @@ const Income = ({ showPage }) => {
   }, [transactions]);
 
   const handleAddIncome = async () => {
-    const { source, amount, date } = newIncome;
-    // if(amount <= 0){
-    //   return toast.error("please only add income")
-    // }
+    const { source, amount, date, icon } = newIncome;
+
+    if (!amount || isNaN(amount) ){
+      toast.error("Please enter a valid positive amount");
+      return;
+    }
+
     const newErrors = {
-      source: !source.trim(),
+      source: !source?.trim(),
       amount: !amount,
       date: !date,
     };
-
     setErrors(newErrors);
 
-    if (newErrors.source || newErrors.amount || newErrors.date) {
+    if (Object.values(newErrors).some(Boolean)) {
       toast.error("Please fill all required fields!");
       return;
     }
 
     setLoading(true);
-    try {
-      const res = await axios.post(
-        `${base_url}/Data/addData`,
-        {
-          name: "income",
-          source: newIncome.source,
-          email: Profile?.email,
-          date: newIncome.date,
-          amount: parseFloat(newIncome.amount),
-          icon: newIncome.icon,
-        },
-        { withCredentials: true }
-      );
 
-      if (res.data.success) {
+    try {
+      const payload = {
+        name: "income",
+        source: source.trim(),
+        email: Profile?.email,
+        date,
+        amount: parseFloat(amount),
+        icon: icon || "💰",
+      };
+
+      const res = await axios.post(`${base_url}/Data/addData`, payload, {
+        withCredentials: true,
+      });
+
+      if (res.data?.success) {
         toast.success(res.data.message || "Income added successfully!");
         settransactions((prev) => [
           ...prev,
           {
-            _id: Date.now(),
-            name: "income",
-            source: newIncome.source,
-            date: newIncome.date,
-            amount: parseFloat(newIncome.amount),
-            icon: newIncome.icon,
+            _id: res.data?.data?._id || Date.now(),
+            ...payload,
           },
         ]);
+        setNewIncome({ source: "", amount: "", date: "", icon: "💰" });
+        setErrors({ source: false, amount: false, date: false });
+        setIsModalOpen(false);
       } else {
-        toast.error(res.data.message || "Something went wrong!");
+        toast.error(res.data?.message || "Something went wrong!");
       }
-
-      setIsModalOpen(false);
-      setNewIncome({ source: "", amount: "", date: "", icon: "💰" });
-      setErrors({ source: false, amount: false, date: false });
     } catch (err) {
-      toast.error("Failed to add income");
       console.error(err);
+      toast.error("Failed to add income. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -130,19 +135,28 @@ const Income = ({ showPage }) => {
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Income");
 
-    const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
-    const dataBlob = new Blob([excelBuffer], { type: "application/octet-stream" });
+    const excelBuffer = XLSX.write(workbook, {
+      bookType: "xlsx",
+      type: "array",
+    });
+    const dataBlob = new Blob([excelBuffer], {
+      type: "application/octet-stream",
+    });
     saveAs(dataBlob, "Income.xlsx");
   };
 
   return (
     <section
-      className={`mb-20 flex-col ${internalActiveSection === "Income" ? "flex" : "hidden"}`}
+      className={`mb-20 flex-col ${
+        internalActiveSection === "Income" ? "flex" : "hidden"
+      }`}
     >
       <div className="bg-white shadow-md overflow-hidden rounded-2xl m-8 p-8 transition flex-col justify-center">
         <div className="flex justify-between">
           <div>
-            <h1 className="text-start font-semibold text-lg">Income Overview</h1>
+            <h1 className="text-start font-semibold text-lg">
+              Income Overview
+            </h1>
             <p className="text-gray-500 mb-4 text-sm">
               Track your earnings over time and analyze your income trends.
             </p>
@@ -204,7 +218,9 @@ const Income = ({ showPage }) => {
                 <div className="flex items-center gap-3">
                   <span className="text-2xl">{t.icon}</span>
                   <div>
-                    <p className="font-medium text-gray-800">{t.source || t.name}</p>
+                    <p className="font-medium text-gray-800">
+                      {t.source || t.name}
+                    </p>
                     <p className="text-sm text-gray-500">{t.date}</p>
                   </div>
                 </div>
@@ -251,7 +267,9 @@ const Income = ({ showPage }) => {
                   placeholder="Enter income source"
                 />
                 {errors.source && (
-                  <p className="text-xs text-red-500 mt-1">Please enter a source.</p>
+                  <p className="text-xs text-red-500 mt-1">
+                    Please enter a source.
+                  </p>
                 )}
               </div>
 
@@ -261,16 +279,23 @@ const Income = ({ showPage }) => {
                   type="number"
                   value={newIncome.amount}
                   onChange={(e) => {
-                    setNewIncome({ ...newIncome, amount: e.target.value });
-                    setErrors((prev) => ({ ...prev, amount: false }));
+                    const value = e.target.value;
+                    setNewIncome({ ...newIncome, amount: value });
+                    setErrors((prev) => ({
+                      ...prev,
+                      amount: !value || parseFloat(value) <= 0,
+                    }));
                   }}
                   className={`w-full border rounded-md px-3 py-2 text-sm ${
                     errors.amount ? "border-red-500" : "border-gray-300"
                   }`}
                   placeholder="Enter amount"
+                  min="0"
                 />
                 {errors.amount && (
-                  <p className="text-xs text-red-500 mt-1">Please enter an amount.</p>
+                  <p className="text-xs text-red-500 mt-1">
+                    Please enter a valid positive amount.
+                  </p>
                 )}
               </div>
 
@@ -288,7 +313,9 @@ const Income = ({ showPage }) => {
                   }`}
                 />
                 {errors.date && (
-                  <p className="text-xs text-red-500 mt-1">Please select a date.</p>
+                  <p className="text-xs text-red-500 mt-1">
+                    Please select a date.
+                  </p>
                 )}
               </div>
 
@@ -316,10 +343,27 @@ const Income = ({ showPage }) => {
               </div>
 
               <button
-                onClick={handleAddIncome}
+                onClick={() => {
+                  const { source, amount, date } = newIncome;
+                  const newErrors = {
+                    source: !source?.trim(),
+                    amount: !amount || parseFloat(amount) <= 0,
+                    date: !date,
+                  };
+                  setErrors(newErrors);
+
+                  if (Object.values(newErrors).some(Boolean)) {
+                    toast.error("Please fill all required fields correctly!");
+                    return;
+                  }
+
+                  handleAddIncome();
+                }}
                 disabled={loading}
                 className={`w-full mt-4 ${
-                  loading ? "bg-purple-400" : "bg-purple-600 hover:bg-purple-700"
+                  loading
+                    ? "bg-purple-400"
+                    : "bg-purple-600 hover:bg-purple-700"
                 } text-white rounded-md py-2 transition`}
               >
                 {loading ? "Adding..." : "Add Income"}

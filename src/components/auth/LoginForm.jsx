@@ -7,7 +7,13 @@ import { useNavigate } from "react-router";
 import base_url from "../../URLS/base_url";
 
 const LoginForm = ({ onChange }) => {
-  const { register, handleSubmit, reset } = useForm();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm();
+
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -15,22 +21,18 @@ const LoginForm = ({ onChange }) => {
   const onSubmit = async (data) => {
     try {
       setLoading(true);
-
       const res = await axios.post(
         `${base_url}/Auth/login`,
         {
           email: data.email,
           password: data.password,
         },
-        {
-          withCredentials: true,
-        }
+        { withCredentials: true }
       );
-
       if (res.data.success === true) {
         toast.success(res.data.message || "Login Successful!");
         reset();
-        navigate("/home")
+        navigate("/home");
       } else {
         toast.error(res.data.message || "Invalid credentials!");
       }
@@ -45,7 +47,6 @@ const LoginForm = ({ onChange }) => {
   return (
     <section className="flex justify-center items-center max-lg:mx-auto min-h-screen w-[70%] max-sm:w-[85%] font-sans">
       <Toaster position="top-center" reverseOrder={false} />
-
       <div className="w-full">
         <div className="mb-6 text-center">
           <h1 className="text-2xl font-semibold text-gray-900 mb-1">
@@ -55,7 +56,6 @@ const LoginForm = ({ onChange }) => {
             Please enter your details to log in
           </p>
         </div>
-
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
           <div>
             <label className="block text-sm font-medium text-gray-800 mb-2">
@@ -64,12 +64,21 @@ const LoginForm = ({ onChange }) => {
             <input
               type="email"
               placeholder="john@example.com"
-              {...register("email")}
+              {...register("email", {
+                required: "Email is required",
+                pattern: {
+                  value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                  message: "Please enter a valid email address",
+                },
+              })}
               className="w-full px-4 py-3 rounded-md border bg-slate-100 border-gray-200 text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#6757ac] placeholder-gray-400"
-              required
             />
+            {errors.email && (
+              <p className="text-sm text-red-500 mt-1">
+                {errors.email.message}
+              </p>
+            )}
           </div>
-
           <div>
             <label className="block text-sm font-medium text-gray-800 mb-2">
               Password
@@ -78,9 +87,16 @@ const LoginForm = ({ onChange }) => {
               <input
                 type={showPassword ? "text" : "password"}
                 placeholder="Min 8 Characters"
-                {...register("password")}
+                {...register("password", {
+                  required: "Password is required",
+                  pattern: {
+                    value:
+                      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+                    message:
+                      "Password must be 8+ chars, with uppercase, lowercase, number & special character",
+                  },
+                })}
                 className="w-full px-4 py-3 rounded-md border bg-slate-100 border-gray-200 text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#6757ac] placeholder-gray-400"
-                required
               />
               <button
                 type="button"
@@ -90,8 +106,12 @@ const LoginForm = ({ onChange }) => {
                 {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
               </button>
             </div>
+            {errors.password && (
+              <p className="text-sm text-red-500 mt-1">
+                {errors.password.message}
+              </p>
+            )}
           </div>
-
           <button
             type="submit"
             disabled={loading}
@@ -100,7 +120,6 @@ const LoginForm = ({ onChange }) => {
             {loading ? "Logging in..." : "LOGIN"}
           </button>
         </form>
-
         <p className="text-sm text-center mt-3 text-gray-700">
           Don’t have an account?{" "}
           <button

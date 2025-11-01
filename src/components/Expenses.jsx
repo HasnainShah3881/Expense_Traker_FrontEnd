@@ -16,7 +16,7 @@ import toast from "react-hot-toast";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 
-const Expenses = ( ) => {
+const Expenses = () => {
   const { internalActiveSection, transactions, settransactions, Profile } =
     useAppContext();
 
@@ -35,7 +35,6 @@ const Expenses = ( ) => {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // Filter only expense data
   const expenseData = transactions
     .filter((t) => t.amount < 0)
     .map((t) => ({
@@ -46,14 +45,7 @@ const Expenses = ( ) => {
   const CustomDot = (props) => {
     const { cx, cy } = props;
     return (
-      <circle
-        cx={cx}
-        cy={cy}
-        r={4}
-        fill="#f43f5e"
-        stroke="#f43f5e"
-        strokeWidth={2}
-      />
+      <circle cx={cx} cy={cy} r={4} fill="#f43f5e" stroke="#f43f5e" strokeWidth={2} />
     );
   };
 
@@ -64,14 +56,11 @@ const Expenses = ( ) => {
       amount: !amount,
       date: !date,
     };
-
     setErrors(newErrors);
-
     if (newErrors.source || newErrors.amount || newErrors.date) {
       toast.error("Please fill all required fields!");
       return;
     }
-
     setLoading(true);
     const newTransaction = {
       id: Date.now(),
@@ -80,7 +69,6 @@ const Expenses = ( ) => {
       amount: -Math.abs(parseFloat(newExpense.amount)),
       icon: newExpense.icon,
     };
-
     try {
       const res = await axios.post(
         `${base_url}/Data/addData`,
@@ -94,7 +82,6 @@ const Expenses = ( ) => {
         },
         { withCredentials: true }
       );
-
       if (res.data.success) {
         toast.success(res.data.message || "Expense added successfully!");
         settransactions((prev) => [...prev, newTransaction]);
@@ -121,83 +108,52 @@ const Expenses = ( ) => {
         Date: t.date,
         Icon: t.icon || "💸",
       }));
-
     const worksheet = XLSX.utils.json_to_sheet(expenseList);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Expenses");
-
-    const excelBuffer = XLSX.write(workbook, {
-      bookType: "xlsx",
-      type: "array",
-    });
-
+    const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
     const data = new Blob([excelBuffer], { type: "application/octet-stream" });
     saveAs(data, "Expenses.xlsx");
   };
 
   return (
-    <section
-      className={`mb-20 flex-col ${
-        internalActiveSection === "Expenses" ? "flex" : "hidden"
-      }`}
-    >
+    <section className={`mb-2 flex-col ${internalActiveSection === "Expenses" ? "flex" : "hidden"}`}>
       <div className="w-full bg-gray-50 p-8">
-        <div className="bg-white rounded-lg shadow-sm p-8">
+        <div className="bg-white rounded-lg shadow-sm p-8x">
           <div className="flex items-start justify-between mb-8">
             <div>
-              <h1 className="text-2xl font-semibold text-gray-900 mb-1">
-                Expense Overview
-              </h1>
+              <h1 className="text-2xl font-semibold text-gray-900 mb-1">Expense Overview</h1>
               <p className="text-sm text-gray-500">
-                Track your spending trends and gain insights into where your
-                money goes.
+                Track your spending trends and gain insights into where your money goes.
               </p>
             </div>
             <button
               onClick={() => setIsModalOpen(true)}
               className="flex items-center cursor-pointer gap-2 px-4 py-2 bg-purple-50 text-purple-600 rounded-lg hover:bg-purple-100 transition-colors font-medium text-sm"
             >
-              <Plus size={16} />
-              Add Expense
+              <Plus size={16} /> Add Expense
             </button>
           </div>
 
           <div className="w-full min-h-[300px]">
-            <ResponsiveContainer width="100%" aspect={2}>
-              <AreaChart
-                data={expenseData}
-                margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
-              >
+            <ResponsiveContainer width="100%" height={300}>
+              <AreaChart data={expenseData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                 <defs>
                   <linearGradient id="colorExpense" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#f43f5e" stopOpacity={0.3} />
                     <stop offset="95%" stopColor="#f43f5e" stopOpacity={0.05} />
                   </linearGradient>
                 </defs>
-                <XAxis
-                  dataKey="date"
-                  axisLine={false}
-                  tickLine={false}
-                  tick={{ fill: "#9ca3af", fontSize: 12 }}
-                  dy={10}
-                />
-                <YAxis
-                  axisLine={false}
-                  tickLine={false}
-                  tick={{ fill: "#9ca3af", fontSize: 12 }}
-                />
+                <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fill: "#9ca3af", fontSize: 12 }} dy={10} />
+                <YAxis axisLine={false} tickLine={false} tick={{ fill: "#9ca3af", fontSize: 12 }} />
                 <Tooltip
                   content={({ active, payload }) => {
                     if (active && payload && payload.length) {
                       const data = payload[0].payload;
                       return (
                         <div className="bg-white p-2 border border-gray-200 rounded-md shadow-sm text-sm">
-                          <p className="font-semibold text-gray-800">
-                            {data.date}
-                          </p>
-                          <p className="text-gray-600">
-                            Expense: ${data.amount.toLocaleString()}
-                          </p>
+                          <p className="font-semibold text-gray-800">{data.date}</p>
+                          <p className="text-gray-600">Expense: ${data.amount.toLocaleString()}</p>
                         </div>
                       );
                     }
@@ -241,15 +197,12 @@ const Expenses = ( ) => {
                 <div className="flex items-center gap-3">
                   <span className="text-2xl">{t.icon || "💸"}</span>
                   <div>
-                    <p className="font-medium text-gray-800">
-                      {t.source || t.name}
-                    </p>
+                    <p className="font-medium text-gray-800">{t.source || t.name}</p>
                     <p className="text-sm text-gray-500">{t.date}</p>
                   </div>
                 </div>
                 <p className="text-red-500 bg-red-100 rounded-lg px-2 font-medium flex items-center gap-1">
-                  -${Math.abs(t.amount).toLocaleString()}{" "}
-                  <ArrowDownRight size={14} />
+                  -${Math.abs(t.amount).toLocaleString()} <ArrowDownRight size={14} />
                 </p>
               </li>
             ))}
@@ -282,11 +235,6 @@ const Expenses = ( ) => {
                   }`}
                   placeholder="Enter expense source"
                 />
-                {errors.source && (
-                  <p className="text-xs text-red-500 mt-1">
-                    Please enter a source.
-                  </p>
-                )}
               </div>
 
               <div>
@@ -303,11 +251,6 @@ const Expenses = ( ) => {
                   }`}
                   placeholder="Enter amount"
                 />
-                {errors.amount && (
-                  <p className="text-xs text-red-500 mt-1">
-                    Please enter an amount.
-                  </p>
-                )}
               </div>
 
               <div>
@@ -323,11 +266,6 @@ const Expenses = ( ) => {
                     errors.date ? "border-red-500" : "border-gray-300"
                   }`}
                 />
-                {errors.date && (
-                  <p className="text-xs text-red-500 mt-1">
-                    Please select a date.
-                  </p>
-                )}
               </div>
 
               <div className="relative">
@@ -342,10 +280,10 @@ const Expenses = ( ) => {
                 </div>
 
                 {showEmojiPicker && (
-                  <div className="absolute z-50 top-14">
+                  <div className="absolute z-50">
                     <EmojiPicker
-                      onEmojiClick={(e) => {
-                        setNewExpense({ ...newExpense, icon: e.emoji });
+                      onEmojiClick={(emojiObject) => {
+                        setNewExpense({ ...newExpense, icon: emojiObject.emoji });
                         setShowEmojiPicker(false);
                       }}
                     />
@@ -356,11 +294,7 @@ const Expenses = ( ) => {
               <button
                 onClick={handleAddExpense}
                 disabled={loading}
-                className={`w-full mt-4 ${
-                  loading
-                    ? "bg-purple-400"
-                    : "bg-purple-600 hover:bg-purple-700"
-                } text-white rounded-md py-2 transition`}
+                className="w-full bg-purple-600 text-white py-2 rounded-md hover:bg-purple-700 transition-colors mt-2"
               >
                 {loading ? "Adding..." : "Add Expense"}
               </button>
@@ -372,4 +306,4 @@ const Expenses = ( ) => {
   );
 };
 
-export default React.memo(Expenses);
+export default Expenses;

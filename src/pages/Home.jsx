@@ -8,9 +8,9 @@ import { useNavigate } from "react-router";
 import { useAppContext } from "../context/context";
 
 const Home = () => {
-  const { Profile } = useAppContext();
+  const { Profile, isSidebarOpen, setIsSidebarOpen } = useAppContext();
   const navigate = useNavigate();
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false); 
+  // const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
     if (!Profile?._id) {
@@ -23,13 +23,12 @@ const Home = () => {
       <Header onMenuClick={() => setIsSidebarOpen(!isSidebarOpen)} />
 
       <div className="flex flex-1 overflow-hidden relative">
-
         <aside
           className={`bg-white border-r border-gray-200 fixed lg:static z-40 h-full transition-all duration-300 
           ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"} 
           lg:translate-x-0 lg:w-1/4 xl:w-1/6 w-64`}
         >
-          <Sidebar  />
+          <Sidebar />
         </aside>
 
         {isSidebarOpen && (

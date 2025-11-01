@@ -7,7 +7,12 @@ import toast, { Toaster } from "react-hot-toast";
 import base_url from "../../URLS/base_url";
 
 const SignupForm = ({ onChange }) => {
-  const { register, handleSubmit, reset } = useForm();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm();
   const [showPassword, setShowPassword] = useState(false);
   const [profileImage, setProfileImage] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -19,7 +24,6 @@ const SignupForm = ({ onChange }) => {
       Object.assign(file, { preview: URL.createObjectURL(file) })
     );
   };
-
 
   useEffect(() => {
     return () => {
@@ -44,9 +48,13 @@ const SignupForm = ({ onChange }) => {
         const formData = new FormData();
         formData.append("image", profileImage);
 
-        const uploadRes = await axios.post(`${base_url}/Auth/upload`, formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
+        const uploadRes = await axios.post(
+          `${base_url}/Auth/upload`,
+          formData,
+          {
+            headers: { "Content-Type": "multipart/form-data" },
+          }
+        );
         uploadedImageUrl = uploadRes.data.imageUrl;
         setIsUploading(false);
       }
@@ -115,8 +123,6 @@ const SignupForm = ({ onChange }) => {
             <p className="text-xs text-gray-500 mt-2">Drop image here...</p>
           )}
         </div>
-
-        {/* 📝 Signup Form */}
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
           <div className="flex flex-col md:flex-row md:space-x-5 space-y-5 md:space-y-0">
             <div className="flex-1">
@@ -125,10 +131,25 @@ const SignupForm = ({ onChange }) => {
               </label>
               <input
                 type="text"
-                placeholder="John"
-                {...register("fullname", { required: true })}
+                placeholder="John Doe"
+                {...register("fullname", {
+                  required: "Full name is required",
+                  pattern: {
+                    value: /^[A-Za-z\s]+$/,
+                    message: "Name can only contain letters and spaces",
+                  },
+                  minLength: {
+                    value: 2,
+                    message: "Name must be at least 2 characters",
+                  },
+                })}
                 className="w-full px-4 py-3 rounded-md border border-gray-200 text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#6757ac] placeholder-gray-400"
               />
+              {errors.fullname && (
+                <p className="text-xs text-red-500 mt-1">
+                  {errors.fullname.message}
+                </p>
+              )}
             </div>
 
             <div className="flex-1">
@@ -138,9 +159,20 @@ const SignupForm = ({ onChange }) => {
               <input
                 type="email"
                 placeholder="john@example.com"
-                {...register("email", { required: true })}
+                {...register("email", {
+                  required: "Email is required",
+                  pattern: {
+                    value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                    message: "Invalid email address",
+                  },
+                })}
                 className="w-full px-4 py-3 rounded-md border border-gray-200 text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#6757ac] placeholder-gray-400"
               />
+              {errors.email && (
+                <p className="text-xs text-red-500 mt-1">
+                  {errors.email.message}
+                </p>
+              )}
             </div>
           </div>
 
@@ -151,8 +183,16 @@ const SignupForm = ({ onChange }) => {
             <div className="relative">
               <input
                 type={showPassword ? "text" : "password"}
-                placeholder="Min 8 Characters"
-                {...register("password", { required: true, minLength: 8 })}
+                placeholder="Min 8 Characters, 1 uppercase, 1 lowercase, 1 number, 1 special"
+                {...register("password", {
+                  required: "Password is required",
+                  pattern: {
+                    value:
+                      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+                    message:
+                      "Password must be 8+ characters, include uppercase, lowercase, number, and special character",
+                  },
+                })}
                 className="w-full px-4 py-3 rounded-md border border-gray-200 text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#6757ac] placeholder-gray-400"
               />
               <button
@@ -163,6 +203,11 @@ const SignupForm = ({ onChange }) => {
                 {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
               </button>
             </div>
+            {errors.password && (
+              <p className="text-xs text-red-500 mt-1">
+                {errors.password.message}
+              </p>
+            )}
           </div>
 
           <button
@@ -170,7 +215,7 @@ const SignupForm = ({ onChange }) => {
             disabled={isUploading}
             className="w-full bg-[#6757ac] cursor-pointer hover:bg-[#5c4bb1] text-white font-semibold py-3 rounded-md transition duration-200 disabled:opacity-70"
           >
-            {isUploading ? "Uploading Image..." : "SIGN UP"}
+            {isUploading ? "Uploading..." : "SIGN UP"}
           </button>
         </form>
 

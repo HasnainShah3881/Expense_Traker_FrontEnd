@@ -1,15 +1,15 @@
-import React, { useEffect } from 'react'
-import Dashboard from './components/Dashboard'
-import Auth from './pages/Auth'
-import { Routes, Route, Navigate } from 'react-router'
-import Home from './pages/Home'
+import React, { useEffect } from 'react';
+import Dashboard from './components/Dashboard';
+import Auth from './pages/Auth';
+import { Routes, Route, Navigate } from 'react-router';
+import Home from './pages/Home';
 import { Toaster } from 'react-hot-toast';
 
 const App = () => {
-  useEffect(()=>{
-    console.log("hello")
+  useEffect(() => {
+    console.log("hello");
+  }, []);
 
-  })
   return (
     <>
       <Routes>
@@ -20,13 +20,11 @@ const App = () => {
       </Routes>
       <Toaster />
     </>
-  )
-}
+  );
+};
 
-export default App
+export default App;
 
 const Root = () => {
-
-  return <Navigate to='/auth' />
-
-}
+  return <Navigate to="/auth" />;
+};

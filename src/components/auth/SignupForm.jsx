@@ -70,7 +70,7 @@ const SignupForm = ({ onChange }) => {
         { withCredentials: true }
       );
 
-      if (res.data.success) {
+      if (res.data.success === true) {
         toast.success(res.data.message || "Account created successfully!");
         reset();
         onChange("login");
